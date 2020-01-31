@@ -24,7 +24,7 @@ exports.getCategory = async function(req, res) {
             console.log(error)
             response.bad("Gagal mendapatkan categories!",null, res)
         } else{
-            response.ok("Success", id ? result.rows[0]:result.rows, res)
+            response.ok("Success", id ? result.rows[0] : result.rows, res)
         }
     });
 };

@@ -10,13 +10,21 @@ const moment = require('moment');
 var localFormat = 'YYYY-MM-DD HH:mm:ss';
 
 exports.getJournals = function(req, res) {
-    pool.query('SELECT * FROM journals', 
+
+    var query = 'SELECT * FROM journals'
+    var id
+    if (req.params.id) {
+        id = req.params.id
+        query += ` WHERE id = '${id}'`
+    }
+
+    pool.query(query, 
     function (error, result){
         if(error){
             console.log(error)
             response.bad("Gagal mendapatkan journals!",null, res)
         } else{
-            response.ok("Success",result.rows, res)
+            response.ok("Success",id ? result.rows[0] : result.rows, res)
         }
     });
 };

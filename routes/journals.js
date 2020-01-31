@@ -13,6 +13,7 @@ const journal = require('./../controllers/journalControllers')
 const verify = require('./../middleware/verify');
 
 /* GET users listing. */
+router.get('/type/:id', upload.none(), verify.verifyToken, type.getTypes);
 router.get('/type', upload.none(), verify.verifyToken, type.getTypes);
 router.post('/type', upload.none(), verify.verifyToken, type.createTypes);
 router.put('/type', upload.none(), verify.verifyToken, type.updateTypes);
@@ -24,6 +25,7 @@ router.post('/category', upload.none(), verify.verifyToken, category.createCateg
 router.put('/category', upload.none(), verify.verifyToken, category.updateCategories);
 router.delete('/category', upload.none(), verify.verifyToken, category.deleteCategories);
 
+router.get('/:id', upload.none(), verify.verifyToken, journal.getJournals );
 router.get('/', upload.none(), verify.verifyToken, journal.getJournals );
 router.post('/', upload.fields([{ name: 'nota', maxCount: 1 },]), verify.verifyToken, journal.createJournals);
 router.put('/', upload.fields([{ name: 'nota', maxCount: 1 },]), verify.verifyToken, journal.updateJournals);
