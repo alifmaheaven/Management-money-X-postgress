@@ -61,7 +61,6 @@ async function (err, result){
             response.bad('Email/Username already exist',null, res)
             return
         } else {
-            console.log(uuidv1());
             pool.query('INSERT INTO users (id, name, username, email, password, is_active, created_date, modified_date) values ($1,$2,$3,$4,$5,0,$6,$7)',
             [uuidv1(), name, username, email, password, String(moment(new Date()).format(localFormat)),String(moment(new Date()).format(localFormat)) ], 
             function (err, result){
@@ -112,14 +111,13 @@ exports.verifyUser = async function(req, res) {
             response.bad('Token Expired',null,res);
             return
         }
-        console.log(authData.userData);
         // response.ok(authData.userData,null, res)
         username = authData.userData.username
         return username
     } )
 
-    await pool.query('UPDATE users SET is_active = 1 WHERE username = $1',
-    [username],
+    await pool.query('UPDATE users SET is_active = 1, modified_date = $1 WHERE username = $2',
+    [String(moment(new Date()).format(localFormat)), username],
     async function (err, result){
         if(err){
             console.log(err)
@@ -248,8 +246,8 @@ exports.changePassword = async function(req, res) {
         return id
     } )
 
-    pool.query('UPDATE users SET password = $1 WHERE id = $2',
-    [newpassword,id],
+    pool.query('UPDATE users SET password = $1 , modified_date = $2 WHERE id = $3',
+    [newpassword, String(moment(new Date()).format(localFormat)), id],
     async function (err, result){
         if(err){
             console.log(err)
