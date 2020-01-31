@@ -9,21 +9,22 @@ const uuidv1 = require('uuid/v1');
 const moment = require('moment');
 var localFormat = 'YYYY-MM-DD HH:mm:ss';
 
-exports.getCategory = function(req, res) {
-    var query = 'SELECT * FROM categories'
-    // req.params.id
+exports.getCategory = async function(req, res) {
+    var query = `SELECT * FROM categories`
+    var id
     if (req.params.id) {
-        console.log('halo');
+        id = req.params.id
+        query += ` WHERE id = '${id}'`
     }
-    // query += 'id'
+    
     // console.log(req.params.id);
-    pool.query('SELECT * FROM categories', 
+    await pool.query(query, 
     function (error, result){
         if(error){
             console.log(error)
             response.bad("Gagal mendapatkan categories!",null, res)
         } else{
-            response.ok("Success", result.rows, res)
+            response.ok("Success", id ? result.rows[0]:result.rows, res)
         }
     });
 };
