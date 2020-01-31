@@ -19,9 +19,9 @@ const jwt = require('jsonwebtoken')
 exports.getUser = async function(req, res) {
     jwt.verify(req.token, SCREET_KEY, (err, authData) => {
         if (err) {
-            res.sendStatus(403);
+            response.bad("Token Expired",null, res);
         } else {
-            response.ok(authData, res)
+            response.ok('Success',authData, res)
         }
     } )
 };
@@ -144,8 +144,9 @@ exports.loginUser = async function(req, res) {
             console.log(err)
             response.bad("Error Database",null, res)
         } else{
-            if (result.length > 0) {
-                userData = result[0]
+            if (result.rows.length > 0) {
+                userData = result.rows[0]
+                console.log(userData);
                 isMatch = await bcrypt.compare( password, userData.password);
                 if (isMatch) {
                     jwt.sign({userData}, SCREET_KEY,{expiresIn: EXPIRED_TOKEN},(err, token) => {
@@ -156,7 +157,7 @@ exports.loginUser = async function(req, res) {
                    })
                    return
                 }
-                response.bad('Username and Password not match',null, res)
+                await response.bad('Username and Password not match',null, res)
                 return
             }
             response.bad('Username not registered or not actived',null, res)
@@ -187,8 +188,8 @@ exports.sendRequestForget = async function(req, res) {
             response.bad("Error Database",null, res)
             return
         } else{
-            if (result.length > 0) {
-                userData = result[0]
+            if (result.rows.length > 0) {
+                userData = result.rows[0]
                 console.log(userData.name);
                     jwt.sign({userData}, SCREET_KEY,{expiresIn: EXPIRED_TOKEN * 8},(err, token) => {  
                         console.log(token);           
