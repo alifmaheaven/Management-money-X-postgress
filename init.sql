@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS
         username VARCHAR(128) UNIQUE NOT NULL,
         email VARCHAR(128) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
-        is_active boolean, 
+        is_active int, 
         created_date TIMESTAMP,
         modified_date TIMESTAMP
     )

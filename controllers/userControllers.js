@@ -2,12 +2,14 @@
 
 require('dotenv').config()
 
-const uuidv1 = require('uuid/v1');
-
 var response = require('../config/res');
 var { pool } = require('../config/database');
 
 var mailConfig = require('../config/email');
+
+const uuidv1 = require('uuid/v1');
+const moment = require('moment');
+var localFormat = 'YYYY-MM-DD HH:mm:ss';
 
 var SCREET_KEY = process.env.SCREET_KEY
 var EXPIRED_TOKEN = process.env.EXPIRED_TOKEN * 60
@@ -59,8 +61,9 @@ async function (err, result){
             response.bad('Email/Username already exist',null, res)
             return
         } else {
-            pool.query('INSERT INTO users (id, name, username, email, password, is_active) values ($1,$2,$3,$4,$5,0)',
-            [uuidv1(), name, username, email, password ], 
+            console.log(uuidv1());
+            pool.query('INSERT INTO users (id, name, username, email, password, is_active, created_date, modified_date) values ($1,$2,$3,$4,$5,0,$6,$7)',
+            [uuidv1(), name, username, email, password, String(moment(new Date()).format(localFormat)),String(moment(new Date()).format(localFormat)) ], 
             function (err, result){
                     if(err){
                         console.log(err)
